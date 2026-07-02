@@ -18,6 +18,20 @@ export interface WarrantyDocument {
   customerPhone?: string;
   shopName?: string;
   purchaseDate?: string;
+  expiresDate?: string;
+  [key: string]: unknown;
+}
+
+export interface SearchWarrantyData {
+  model?: string;
+  sn?: string;
+  purchaseDate?: string;
+  expiresDate?: string;
+  [key: string]: unknown;
+}
+
+export interface SearchWarrantyResponse {
+  data: SearchWarrantyData;
   [key: string]: unknown;
 }
 
@@ -36,5 +50,15 @@ export async function activateWarranty(
     customerPhone: warrantyInfo.customerPhone,
     shopName: warrantyInfo.shopName,
     purchaseDate: warrantyInfo.purchaseDate,
+  });
+}
+
+export async function searchWarranty(sn: string): Promise<SearchWarrantyResponse> {
+  const normalizedSn = sn.trim();
+
+  return http.get<SearchWarrantyResponse>("/warranties/search", {
+    query: {
+      sn: normalizedSn || undefined,
+    },
   });
 }

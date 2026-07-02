@@ -62,13 +62,13 @@ export default function Home() {
             <RegistrationIcon />
             <span>Product Registration</span>
           </Link>
-          <button
-            type="button"
+          <Link
+            href="/product-information"
             className="flex w-full max-w-[320px] items-center justify-center gap-2 rounded-2xl border border-[#a9a9ac] bg-[#f7f7f7] px-6 py-3 text-lg font-medium text-[#151515] shadow-[0_1px_0_rgba(0,0,0,0.05)] transition hover:bg-white sm:w-auto sm:min-w-[230px] sm:gap-3 sm:text-[1.5rem]"
           >
             <InformationIcon />
             <span>Product Information</span>
-          </button>
+          </Link>
         </div>
       </section>
     </main>

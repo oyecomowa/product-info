@@ -1,7 +1,7 @@
 "use client";
 
 import PageHeroHeader from "@/components/PageHeroHeader";
-import type { WarrantyDocument } from "@/lib/api";
+import type { SearchWarrantyData } from "@/lib/api";
 import { useEffect, useState } from "react";
 
 function formatDateForDisplay(value: unknown): string {
@@ -23,18 +23,18 @@ function formatDateForDisplay(value: unknown): string {
   }).format(parsedDate);
 }
 
-export default function ProductRegistrationResultPage() {
-  const [warrantyData, setWarrantyData] = useState<WarrantyDocument | null>(null);
+export default function ProductInformationResultPage() {
+  const [warrantyData, setWarrantyData] = useState<SearchWarrantyData | null>(null);
 
   useEffect(() => {
-    const serialized = sessionStorage.getItem("warranty-registration-result");
+    const serialized = sessionStorage.getItem("warranty-search-result");
 
     if (!serialized) {
       return;
     }
 
     try {
-      const parsed = JSON.parse(serialized) as WarrantyDocument;
+      const parsed = JSON.parse(serialized) as SearchWarrantyData;
       setWarrantyData(parsed);
     } catch {
       setWarrantyData(null);
@@ -43,12 +43,12 @@ export default function ProductRegistrationResultPage() {
 
   return (
     <main className="min-h-screen w-full bg-[#f5f5f6]">
-      <PageHeroHeader title="Registration Successful" />
+      <PageHeroHeader title="Product Information" />
 
       <section className="px-4 py-8 sm:py-12">
         <div className="mx-auto w-full max-w-[760px]">
           <div className="rounded-xl border border-[#d8dee4] bg-white p-5 shadow-sm sm:p-7">
-            <p className="mt-2 text-base text-[#4b5563]">Your warranty has been registered successfully.</p>
+            <p className="mt-2 text-base text-[#4b5563]">Warranty information found.</p>
 
             {warrantyData ? (
               <div className="mt-6 overflow-hidden rounded-lg border border-[#d8dee4] bg-white">
@@ -68,24 +68,6 @@ export default function ProductRegistrationResultPage() {
                     </tr>
                     <tr className="border-t border-[#e5e7eb] odd:bg-white even:bg-[#fafbfc]">
                       <th scope="row" className="px-4 py-3 text-left font-medium text-[#374151]">
-                        Customer
-                      </th>
-                      <td className="px-4 py-3 text-left text-[#111827]">{warrantyData.customerName || "N/A"}</td>
-                    </tr>
-                    <tr className="border-t border-[#e5e7eb] odd:bg-white even:bg-[#fafbfc]">
-                      <th scope="row" className="px-4 py-3 text-left font-medium text-[#374151]">
-                        Customer Phone
-                      </th>
-                      <td className="px-4 py-3 text-left text-[#111827]">{warrantyData.customerPhone || "N/A"}</td>
-                    </tr>
-                    <tr className="border-t border-[#e5e7eb] odd:bg-white even:bg-[#fafbfc]">
-                      <th scope="row" className="px-4 py-3 text-left font-medium text-[#374151]">
-                        Shop Name
-                      </th>
-                      <td className="px-4 py-3 text-left text-[#111827]">{warrantyData.shopName || "N/A"}</td>
-                    </tr>
-                    <tr className="border-t border-[#e5e7eb] odd:bg-white even:bg-[#fafbfc]">
-                      <th scope="row" className="px-4 py-3 text-left font-medium text-[#374151]">
                         Purchase Date
                       </th>
                       <td className="px-4 py-3 text-left text-[#111827]">{formatDateForDisplay(warrantyData.purchaseDate)}</td>
@@ -101,7 +83,7 @@ export default function ProductRegistrationResultPage() {
               </div>
             ) : (
               <p className="mt-6 rounded-md border border-[#f5d0d0] bg-[#fff6f6] px-4 py-3 text-sm text-[#991b1b] sm:text-base">
-                No registration result found. Please submit the form again.
+                No warranty information found. Please try again.
               </p>
             )}
           </div>
