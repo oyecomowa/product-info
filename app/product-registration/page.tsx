@@ -1,7 +1,9 @@
 "use client";
 
 import Alert from "@/components/Alert";
+import PageHeroHeader from "@/components/PageHeroHeader";
 import { activateWarranty, ApiError, findShop, type ActivateWarrantyResponse, type ShopItem } from "@/lib/api";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 function extractShopName(shop: ShopItem): string | null {
@@ -28,6 +30,7 @@ function toUniqueShopNames(shops: ShopItem[]): string[] {
 }
 
 export default function ProductRegistrationPage() {
+  const router = useRouter();
   const [serialNumber, setSerialNumber] = useState("");
   const [model, setModel] = useState("");
   const [snModelError, setSnModelError] = useState("");
@@ -47,9 +50,7 @@ export default function ProductRegistrationPage() {
   const [isLoadingShops, setIsLoadingShops] = useState(false);
   const [showShopOptions, setShowShopOptions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [warrantyData, setWarrantyData] = useState<ActivateWarrantyResponse["data"] | null>(null);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertType, setAlertType] = useState<"error" | "success">("error");
+  const [errorMessage, setErrorMessage] = useState("");
   const activeRequestIdRef = useRef(0);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -157,9 +158,8 @@ export default function ProductRegistrationPage() {
         purchaseDate,
       });
 
-      setWarrantyData(response.data);
-      setAlertMessage("Your warranty has been registered successfully.");
-      setAlertType("success");
+      sessionStorage.setItem("warranty-registration-result", JSON.stringify(response.data));
+      router.push("/product-registration/result");
     } catch (err) {
       let errorMessage = "Failed to submit warranty registration. Please try again.";
 
@@ -176,8 +176,7 @@ export default function ProductRegistrationPage() {
         errorMessage = err.message;
       }
 
-      setAlertMessage(errorMessage);
-      setAlertType("error");
+      setErrorMessage(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -193,65 +192,21 @@ export default function ProductRegistrationPage() {
 
   return (
     <main className="min-h-screen w-full bg-[#f5f5f6]">
-      {alertMessage && (
+      {errorMessage && (
         <Alert
-          type={alertType}
-          title={alertType === "error" ? "Something went wrong?" : "Warranty Registration Successful!"}
-          message={alertMessage}
-          primaryButton={
-            alertType === "error"
-              ? {
-                  label: "Close",
-                  onClick: () => setAlertMessage(""),
-                }
-              : {
-                  label: "Done",
-                  onClick: () => {
-                    setAlertMessage("");
-                    setWarrantyData(null);
-                  },
-                }
-          }
-          onClose={() => {
-            setAlertMessage("");
-            if (alertType === "success") {
-              setWarrantyData(null);
-            }
+          type="error"
+          title="Something went wrong?"
+          message={errorMessage}
+          primaryButton={{
+            label: "Close",
+            onClick: () => setErrorMessage(""),
           }}
+          onClose={() => setErrorMessage("")}
           autoClose={false}
-        >
-          {alertType === "success" && warrantyData && (
-            <div className="space-y-2">
-              <p>
-                <strong>Document ID:</strong> {warrantyData.documentId || warrantyData.id || "N/A"}
-              </p>
-              {warrantyData.sn && (
-                <p>
-                  <strong>Serial Number:</strong> {warrantyData.sn}
-                </p>
-              )}
-              {warrantyData.model && (
-                <p>
-                  <strong>Model:</strong> {warrantyData.model}
-                </p>
-              )}
-              {warrantyData.customerName && (
-                <p>
-                  <strong>Customer:</strong> {warrantyData.customerName}
-                </p>
-              )}
-            </div>
-          )}
-        </Alert>
+        />
       )}
 
-      <section className="flex h-[28vh] min-h-[150px] items-end bg-[#d7d7dc] px-4 pb-5 sm:pb-6">
-        <div className="mx-auto w-full max-w-[760px]">
-          <h1 className="text-2xl font-semibold tracking-tight text-[#101010] sm:text-4xl">
-            Product Registration
-          </h1>
-        </div>
-      </section>
+      <PageHeroHeader title="Product Registration" />
 
       <section className="px-4 py-8 sm:py-12">
         <div className="mx-auto w-full max-w-[760px]">
