@@ -1,7 +1,7 @@
 import { http } from "./http";
 
 export interface WarrantyInfo {
-  sn: string;
+  snOrImei: string;
   model: string;
   customerName: string;
   customerPhone: string;
@@ -13,6 +13,7 @@ export interface WarrantyDocument {
   documentId?: string;
   id?: number | string;
   sn?: string;
+  imei?: string;
   model?: string;
   customerName?: string;
   customerPhone?: string;
@@ -25,6 +26,7 @@ export interface WarrantyDocument {
 export interface SearchWarrantyData {
   model?: string;
   sn?: string;
+  imei?: string;
   purchaseDate?: string;
   expiresDate?: string;
   [key: string]: unknown;
@@ -44,7 +46,7 @@ export async function activateWarranty(
   warrantyInfo: WarrantyInfo,
 ): Promise<ActivateWarrantyResponse> {
   return http.post<ActivateWarrantyResponse>("/warranties/activate", {
-    sn: warrantyInfo.sn,
+    snOrImei: warrantyInfo.snOrImei,
     model: warrantyInfo.model,
     customerName: warrantyInfo.customerName,
     customerPhone: warrantyInfo.customerPhone,
@@ -53,12 +55,12 @@ export async function activateWarranty(
   });
 }
 
-export async function searchWarranty(sn: string): Promise<SearchWarrantyResponse> {
-  const normalizedSn = sn.trim();
+export async function searchWarranty(snOrImei: string): Promise<SearchWarrantyResponse> {
+  const normalizedSnOrImei = snOrImei.trim();
 
   return http.get<SearchWarrantyResponse>("/warranties/search", {
     query: {
-      sn: normalizedSn || undefined,
+      snOrImei: normalizedSnOrImei || undefined,
     },
   });
 }

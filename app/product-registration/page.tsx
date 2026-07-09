@@ -2,7 +2,7 @@
 
 import Alert from "@/components/Alert";
 import PageHeroHeader from "@/components/PageHeroHeader";
-import { activateWarranty, ApiError, findShop, type ActivateWarrantyResponse, type ShopItem } from "@/lib/api";
+import { activateWarranty, ApiError, findShop, type ShopItem } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -31,7 +31,7 @@ function toUniqueShopNames(shops: ShopItem[]): string[] {
 
 export default function ProductRegistrationPage() {
   const router = useRouter();
-  const [serialNumber, setSerialNumber] = useState("");
+  const [snOrImei, setSnOrImei] = useState("");
   const [model, setModel] = useState("");
   const [snModelError, setSnModelError] = useState("");
 
@@ -116,8 +116,8 @@ export default function ProductRegistrationPage() {
   async function handleSave(): Promise<void> {
     let hasError = false;
 
-    if (!serialNumber.trim() && !model.trim()) {
-      setSnModelError("Please provide at least one of Serial Number or Model.");
+    if (!snOrImei.trim() || !model.trim()) {
+      setSnModelError("Serial Number/IMEI and Model are required.");
       hasError = true;
     } else {
       setSnModelError("");
@@ -150,7 +150,7 @@ export default function ProductRegistrationPage() {
 
     try {
       const response = await activateWarranty({
-        sn: serialNumber.trim(),
+        snOrImei: snOrImei.trim(),
         model: model.trim(),
         customerName: customerName.trim(),
         customerPhone: phoneNumber.trim(),
@@ -213,11 +213,11 @@ export default function ProductRegistrationPage() {
           <form className="space-y-4" action="#" method="post">
             <input
               type="text"
-              name="serialNumber"
-              value={serialNumber}
-              placeholder="Serial Number"
+              name="snOrImei"
+              value={snOrImei}
+              placeholder="Serial Number/IMEI"
               onChange={(e) => {
-                setSerialNumber(e.target.value);
+                setSnOrImei(e.target.value);
                 if (snModelError) setSnModelError("");
               }}
               className={`h-12 w-full rounded-md border bg-transparent px-3 text-lg text-[#1f1f1f] outline-none transition ${

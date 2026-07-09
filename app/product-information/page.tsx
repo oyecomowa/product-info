@@ -8,20 +8,20 @@ import { useState } from "react";
 
 export default function ProductInformationPage() {
   const router = useRouter();
-  const [serialNumber, setSerialNumber] = useState("");
+  const [snOrImei, setSnOrImei] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   async function handleCheck(): Promise<void> {
-    if (!serialNumber.trim()) {
-      setErrorMessage("Serial Number is required.");
+    if (!snOrImei.trim()) {
+      setErrorMessage("Serial Number/IMEI is required.");
       return;
     }
 
     setIsChecking(true);
 
     try {
-      const response = await searchWarranty(serialNumber);
+      const response = await searchWarranty(snOrImei);
       sessionStorage.setItem("warranty-search-result", JSON.stringify(response.data));
       router.push("/product-information/result");
     } catch (err) {
@@ -67,10 +67,10 @@ export default function ProductInformationPage() {
         <div className="mx-auto w-full max-w-[760px] space-y-4">
           <input
             type="text"
-            name="serialNumber"
-            value={serialNumber}
-            placeholder="Serial Number"
-            onChange={(event) => setSerialNumber(event.target.value)}
+            name="snOrImei"
+            value={snOrImei}
+            placeholder="Serial Number/IMEI"
+            onChange={(event) => setSnOrImei(event.target.value)}
             className="h-12 w-full rounded-md border border-[#b3b3b6] bg-transparent px-3 text-lg text-[#1f1f1f] outline-none transition focus:border-[#7f7f83]"
           />
 

@@ -49,6 +49,7 @@ export default function Home() {
           height={1080}
           sizes="100vw"
           priority
+          style={{ height: "auto" }}
           className="relative left-1/2 block h-auto w-[200%] max-w-none -translate-x-1/2 sm:left-0 sm:w-full sm:max-w-full sm:translate-x-0"
         />
       </section>

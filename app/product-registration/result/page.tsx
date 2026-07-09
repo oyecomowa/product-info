@@ -2,7 +2,7 @@
 
 import PageHeroHeader from "@/components/PageHeroHeader";
 import type { WarrantyDocument } from "@/lib/api";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function formatDateForDisplay(value: unknown): string {
   if (typeof value !== "string" || !value.trim()) {
@@ -24,22 +24,22 @@ function formatDateForDisplay(value: unknown): string {
 }
 
 export default function ProductRegistrationResultPage() {
-  const [warrantyData, setWarrantyData] = useState<WarrantyDocument | null>(null);
+  const [warrantyData] = useState<WarrantyDocument | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
 
-  useEffect(() => {
     const serialized = sessionStorage.getItem("warranty-registration-result");
-
     if (!serialized) {
-      return;
+      return null;
     }
 
     try {
-      const parsed = JSON.parse(serialized) as WarrantyDocument;
-      setWarrantyData(parsed);
+      return JSON.parse(serialized) as WarrantyDocument;
     } catch {
-      setWarrantyData(null);
+      return null;
     }
-  }, []);
+  });
 
   return (
     <main className="min-h-screen w-full bg-[#f5f5f6]">
@@ -59,6 +59,12 @@ export default function ProductRegistrationResultPage() {
                         Serial Number
                       </th>
                       <td className="px-4 py-3 text-left text-[#111827]">{warrantyData.sn || "N/A"}</td>
+                    </tr>
+                    <tr className="border-t border-[#e5e7eb] odd:bg-white even:bg-[#fafbfc]">
+                      <th scope="row" className="px-4 py-3 text-left font-medium text-[#374151]">
+                        IMEI
+                      </th>
+                      <td className="px-4 py-3 text-left text-[#111827]">{warrantyData.imei || "N/A"}</td>
                     </tr>
                     <tr className="border-t border-[#e5e7eb] odd:bg-white even:bg-[#fafbfc]">
                       <th scope="row" className="px-4 py-3 text-left font-medium text-[#374151]">
